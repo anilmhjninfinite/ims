@@ -31,7 +31,7 @@ public class RoleController {
     }
 
     @GetMapping(value="/roles")
-    public ResponseEntity<Map<String, Object>> getAll(@RequestBody Role role) {
+    public ResponseEntity<Map<String, Object>> getAll() {
         List<Role> roles = repoService.getAllRoles();
         return ResponseEntity.status(HttpStatus.OK).body(
                 new ApiResponseBuilder()
