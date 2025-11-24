@@ -1,32 +1,35 @@
 package org.infinite.ims.user.service;
 
+import org.infinite.ims.jwt.service.JwtService;
 import org.infinite.ims.user.model.Role;
 import org.infinite.ims.user.model.User;
-import org.infinite.ims.user.repo.RoleRepo;
-import org.infinite.ims.user.repo.UserRepo;
+import org.infinite.ims.user.repo.RoleRepository;
+import org.infinite.ims.user.repo.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class UserService {
 
     @Autowired
-    private UserRepo userRepo;
+    private UserRepository userRepo;
 
     @Autowired
-    private RoleRepo roleRepo;
+    private RoleRepository roleRepo;
 
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
     private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private JwtService jwtService;
 
     public User registerUser(User user) {
         List<Role> roles = new ArrayList<>();
@@ -49,7 +52,18 @@ public class UserService {
     }
 
 
-    public void validateUser(User user) {
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
+    public Map<String, Object> validateUser(User user) {
+        Map<String, Object> map = new HashMap<>();
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        user.getUsername(),
+                        user.getPassword()
+                )
+        );
+        String token = jwtService.generateToken(user.getUsername());
+        Date date = jwtService.extractExpiration(token);
+        map.put("token", token);
+        map.put("expiration", date);
+        return map;
     }
 }

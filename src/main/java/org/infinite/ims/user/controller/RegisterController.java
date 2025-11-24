@@ -21,22 +21,24 @@ public class RegisterController {
 
     @PostMapping(value  ="/register")
     public ResponseEntity<Map<String, Object>> registerUser(@RequestBody User user) throws JsonProcessingException {
-        userService.registerUser(user);
+        User response = userService.registerUser(user);
         return ResponseEntity.status(HttpStatus.OK).body(
                 new ApiResponseBuilder()
                         .status(HttpStatus.CREATED)
                         .message("User registered successfully")
+                        .data(response)
                         .build()
         );
     }
 
     @PostMapping(value="/login")
     public ResponseEntity<Map<String, Object>> login(@RequestBody User user) throws JsonProcessingException {
-        userService.validateUser(user);
+        Map<String, Object> token = userService.validateUser(user);
         return ResponseEntity.status(HttpStatus.OK).body(
                 new ApiResponseBuilder()
                         .status(HttpStatus.OK)
                         .message("User logged in successfully")
+                        .data(token)
                         .build()
         );
     }

@@ -14,17 +14,27 @@ import java.util.Map;
 public class GenericExceptionHandler {
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Map<String, Object>> handleException(Exception e) throws JsonProcessingException {
+    public ResponseEntity<Map<String, Object>> handleException(Exception e){
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
                 new ApiResponseBuilder()
                         .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                        .message(e.getClass() + e.getMessage())
+                        .message(e.getClass()+" "+ e.getMessage())
+                        .build()
+        );
+    }
+
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<Map<String, Object>> handleRuntimeException(RuntimeException e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+                new ApiResponseBuilder()
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .message(e.getMessage())
                         .build()
         );
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<Map<String, Object>> handleDataIntegrityViolationException(DataIntegrityViolationException e) throws JsonProcessingException {
+    public ResponseEntity<Map<String, Object>> handleDataIntegrityViolationException(DataIntegrityViolationException e){
         return  ResponseEntity.status(HttpStatus.CONFLICT).body(
                 new ApiResponseBuilder()
                         .status(HttpStatus.CONFLICT)

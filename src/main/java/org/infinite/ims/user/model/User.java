@@ -36,10 +36,10 @@ public class User {
 
     @Email
     private String email;
-    private boolean isAccountExpired;
-    private boolean isLocked;
-    private boolean isEnabled;
-    private boolean isCredentialsExpired;
+    private boolean isAccountNonExpired;
+    private boolean isAccountNonLocked;
+    private boolean isAccountEnabled;
+    private boolean isAccountCredentialsNonExpired;
 
     @Pattern(regexp="^\\+?[0-9]{10,15}$", message="Invalid phone number")
     private String contact;
